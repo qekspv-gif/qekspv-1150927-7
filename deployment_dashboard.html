@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>靜態網頁部署儀表板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .step-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8; 
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-gray-800">
+
+    <!-- 側邊欄 (Sidebar) -->
+    <aside class="w-64 bg-slate-900 text-white flex-shrink-0 hidden md:flex flex-col shadow-xl z-20">
+        <div class="p-6 border-b border-slate-700">
+            <h1 class="text-xl font-bold flex items-center gap-3">
+                <i class="fa-solid fa-rocket text-indigo-400"></i>
+                網頁部署指南
+            </h1>
+            <p class="text-xs text-slate-400 mt-2">Static Site Deployment</p>
+        </div>
+        
+        <nav class="flex-1 p-4 space-y-2">
+            <button onclick="switchTab('github')" id="btn-github" class="w-full flex items-center gap-3 px-4 py-3 bg-indigo-600 rounded-lg text-white font-medium transition-colors">
+                <i class="fa-brands fa-github text-lg"></i>
+                GitHub Pages
+            </button>
+            <button onclick="switchTab('netlify')" id="btn-netlify" class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg font-medium transition-colors">
+                <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                Netlify
+            </button>
+        </nav>
+
+        <div class="p-4 text-xs text-slate-500 text-center border-t border-slate-800">
+            &copy; 2026 Deployment Dashboard
+        </div>
+    </aside>
+
+    <!-- 行動版頂部導覽 (Mobile Topbar) -->
+    <div class="md:hidden fixed top-0 w-full bg-slate-900 text-white z-30 flex justify-between items-center p-4 shadow-lg">
+        <h1 class="text-lg font-bold flex items-center gap-2">
+            <i class="fa-solid fa-rocket text-indigo-400"></i>
+            網頁部署指南
+        </h1>
+        <div class="flex gap-2 text-sm">
+            <button onclick="switchTab('github')" id="btn-mobile-github" class="px-3 py-1.5 bg-indigo-600 rounded-md font-medium">GitHub</button>
+            <button onclick="switchTab('netlify')" id="btn-mobile-netlify" class="px-3 py-1.5 bg-slate-700 rounded-md font-medium">Netlify</button>
+        </div>
+    </div>
+
+    <!-- 主要內容區 (Main Content) -->
+    <main class="flex-1 h-full overflow-y-auto bg-gray-50 pt-20 md:pt-0 relative">
+        <div class="max-w-6xl mx-auto p-6 lg:p-10 pb-24">
+
+            <!-- 準備工作卡片 (共用) -->
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-5 rounded-r-xl shadow-sm mb-8 flex items-start gap-4">
+                <div class="flex-shrink-0 text-amber-500 mt-0.5">
+                    <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-amber-800 font-bold text-lg mb-1">📥 準備工作</h3>
+                    <p class="text-amber-700 text-sm">請確保電腦中的網頁資料夾第一層，有一個名為 <code class="bg-amber-100 px-1.5 py-0.5 rounded text-amber-900 font-mono text-xs font-bold">index.html</code> 的首頁檔案。</p>
+                </div>
+            </div>
+
+            <!-- GitHub Pages 區塊 -->
+            <section id="content-github" class="block animate-[fadeIn_0.3s_ease-in-out]">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow text-slate-800 text-2xl">
+                        <i class="fa-brands fa-github"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">GitHub Pages 部署</h2>
+                        <p class="text-gray-500 text-sm">免費且快速地將自己寫好的靜態網頁（HTML、CSS、JS）發布到網路上。無須複雜指令！</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+                    <!-- 連接線 (僅在桌面版顯示) -->
+                    <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-indigo-100 -z-10 translate-y-[-50%]"></div>
+
+                    <!-- 步驟 1 -->
+                    <div class="step-card bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative">
+                        <div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg absolute -top-5 left-6 shadow-md border-4 border-white">1</div>
+                        <h3 class="text-lg font-bold text-gray-800 mt-4 mb-3 border-b pb-2 flex items-center justify-between">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-folder-plus text-indigo-500"></i> 建立儲存庫
+                            </span>
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-2 py-1 rounded transition-colors flex items-center gap-1" title="前往 GitHub 官網">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </h3>
+                        <ul class="space-y-2 text-sm text-gray-600 list-disc list-inside">
+                            <li>登入 GitHub 網站。</li>
+                            <li>點擊右上角的 「+」 圖示，選擇 <strong>「New repository」</strong>。</li>
+                            <li>名稱填入 <code class="bg-gray-100 px-1 rounded text-indigo-600">使用者名稱.github.io</code> (例如：myweb.github.io)。</li>
+                            <li>選擇 <strong>「Public」</strong>（必須是公開的）。</li>
+                            <li>勾選 <strong>「Add a README file」</strong>。</li>
+                            <li>點擊下方 <strong>「Create repository」</strong>。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 步驟 2 -->
+                    <div class="step-card bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative">
+                        <div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg absolute -top-5 left-6 shadow-md border-4 border-white">2</div>
+                        <h3 class="text-lg font-bold text-gray-800 mt-4 mb-3 border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-file-arrow-up text-indigo-500"></i> 上傳網頁檔案
+                        </h3>
+                        <ul class="space-y-2 text-sm text-gray-600 list-disc list-inside">
+                            <li>進入剛才建立好的儲存庫頁面。</li>
+                            <li>點擊 <strong>「Add file」</strong> 按鈕，選擇 <strong>「Upload files」</strong>。</li>
+                            <li>將你的網站檔案直接拖曳到頁面中，或點擊選擇檔案。<br><span class="text-xs text-red-500 ml-5">*首頁檔名必須命名為 index.html</span></li>
+                            <li>點擊下方的 <strong>「Commit changes」</strong> 按鈕完成上傳。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 步驟 3 -->
+                    <div class="step-card bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative">
+                        <div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg absolute -top-5 left-6 shadow-md border-4 border-white">3</div>
+                        <h3 class="text-lg font-bold text-gray-800 mt-4 mb-3 border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-globe text-indigo-500"></i> 啟用與查看
+                        </h3>
+                        <ul class="space-y-2 text-sm text-gray-600 list-disc list-inside">
+                            <li>至儲存庫的 <strong>Settings > Pages</strong>。</li>
+                            <li>設定部署來源 (Source) 為 <strong>main 分支</strong>與<strong>根目錄 (root)</strong>。</li>
+                            <li>儲存後等待數分鐘即可。</li>
+                            <li>透過專屬網址造訪你的網站！</li>
+                        </ul>
+                        <div class="mt-4 p-3 bg-indigo-50 rounded-lg text-indigo-800 text-xs text-center border border-indigo-100">
+                            詳細操作可參考 feifei.tw
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Netlify 區塊 -->
+            <section id="content-netlify" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow text-teal-500 text-2xl">
+                        <i class="fa-solid fa-diamond"></i> <!-- Netlify doesn't have a standard FA icon, using diamond as proxy -->
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Netlify 拖曳部署</h2>
+                        <p class="text-gray-500 text-sm">完整 5 步驟：登入、建立新專案、拖曳部署、修改網址，快速上線！</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative mt-8">
+                    
+                    <!-- 步驟 1 -->
+                    <div class="step-card bg-white p-6 rounded-2xl shadow-sm border-t-4 border-teal-500 relative">
+                        <div class="text-teal-500 font-black text-4xl absolute right-4 top-4 opacity-10">01</div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center justify-between">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-right-to-bracket text-teal-500"></i> 登入專案頁面
+                            </span>
+                            <a href="https://app.netlify.com/" target="_blank" rel="noopener noreferrer" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-2 py-1 rounded transition-colors flex items-center gap-1 z-10 relative" title="前往 Netlify 控制台">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </h3>
+                        <ul class="space-y-2 text-sm text-gray-600 list-inside relative z-10">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-teal-400 mt-1 text-xs"></i> 開啟瀏覽器，進入 Netlify 控制台。</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-teal-400 mt-1 text-xs"></i> 使用帳號（或 GitHub）登入。</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-teal-400 mt-1 text-xs"></i> 點擊左上角的 <strong>「Projects」</strong>。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 步驟 2 -->
+                    <div class="step-card bg-white p-6 rounded-2xl shadow-sm border-t-4 border-teal-500 relative">
+                        <div class="text-teal-500 font-black text-4xl absolute right-4 top-4 opacity-10">02</div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-square-plus text-teal-500"></i> 建立新專案
+                        </h3>
+                        <ul class="space-y-2 text-sm text-gray-600 list-inside">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-teal-400 mt-1 text-xs"></i> 在右上角，點擊青綠色的 <strong>「Add new site」</strong> 按鈕。</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-teal-400 mt-1 text-xs"></i> 選擇下拉選單中的 <strong>「Deploy manually」</strong>（手動部署模式）。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 步驟 3 -->
+                    <div class="step-card bg-white p-6 rounded-2xl shadow-sm border-t-4 border-teal-500 relative">
+                        <div class="text-teal-500 font-black text-4xl absolute right-4 top-4 opacity-10">03</div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-box-archive text-teal-500"></i> 拖曳資料夾上傳
+                        </h3>
+                        <div class="bg-gray-50 border-2 border-dashed border-teal-200 rounded-lg p-4 mb-3 text-center text-xs text-gray-500 flex flex-col items-center justify-center">
+                            <i class="fa-solid fa-cloud-arrow-up text-2xl text-teal-300 mb-1"></i>
+                            Drag and drop your site folder here
+                        </div>
+                        <ul class="space-y-2 text-sm text-gray-600 list-inside">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-teal-400 mt-1 text-xs"></i> 將電腦中的網頁資料夾，直接拖曳到中央虛線框內。</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-teal-400 mt-1 text-xs"></i> 等待青綠色的上傳進度條跑完。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 步驟 4 -->
+                    <div class="step-card bg-white p-6 rounded-2xl shadow-sm border-t-4 border-teal-500 relative">
+                        <div class="text-teal-500 font-black text-4xl absolute right-4 top-4 opacity-10">04</div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-gears text-teal-500"></i> 進入修改網址設定
+                        </h3>
+                        <ul class="space-y-2 text-sm text-gray-600 list-inside">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-teal-400 mt-1 text-xs"></i> 進入 Project overview 畫面後，點擊左側 <strong>「Domain management」</strong>。</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-teal-400 mt-1 text-xs"></i> 找到 Custom domains 第一個欄位，點擊右邊 <strong>「Options」</strong>。</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-teal-400 mt-1 text-xs"></i> 點擊 <strong>「Edit site name」</strong>。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 步驟 5 -->
+                    <div class="step-card bg-white p-6 rounded-2xl shadow-sm border-t-4 border-teal-500 relative md:col-span-2 lg:col-span-1">
+                        <div class="text-teal-500 font-black text-4xl absolute right-4 top-4 opacity-10">05</div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-globe text-teal-500"></i> 輸入新名稱並上線
+                        </h3>
+                        <ul class="space-y-2 text-sm text-gray-600 list-inside relative z-10">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-teal-400 mt-1 text-xs"></i> 刪除亂數英文，輸入想要的網址名稱 (例: my-portfolio-2026)。</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-teal-400 mt-1 text-xs"></i> 點擊 <strong>「Save」</strong> (僅限英文小寫、數字與連字號)。</li>
+                        </ul>
+                        <div class="mt-4 p-3 bg-teal-50 rounded-lg text-teal-800 text-xs font-medium border border-teal-100 flex items-center gap-2">
+                            <i class="fa-solid fa-party-horn"></i> 大功告成！網址即刻更新為您的專屬名稱！
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- 互動邏輯腳本 -->
+    <script>
+        // 定義樣式類別
+        const activeClassDesktop = ['bg-indigo-600', 'text-white', 'shadow-md'];
+        const inactiveClassDesktop = ['text-slate-300', 'hover:bg-slate-800', 'hover:text-white'];
+        
+        const activeClassMobile = ['bg-indigo-600', 'text-white'];
+        const inactiveClassMobile = ['bg-slate-700', 'text-slate-200'];
+
+        function switchTab(tabId) {
+            // 切換內容可見度
+            document.getElementById('content-github').classList.add('hidden');
+            document.getElementById('content-netlify').classList.add('hidden');
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+
+            // 取得按鈕元素
+            const btnGitHubDesktop = document.getElementById('btn-github');
+            const btnNetlifyDesktop = document.getElementById('btn-netlify');
+            
+            const btnGitHubMobile = document.getElementById('btn-mobile-github');
+            const btnNetlifyMobile = document.getElementById('btn-mobile-netlify');
+
+            // 重置所有按鈕樣式 (Desktop)
+            btnGitHubDesktop.classList.remove(...activeClassDesktop);
+            btnGitHubDesktop.classList.add(...inactiveClassDesktop);
+            btnNetlifyDesktop.classList.remove(...activeClassDesktop);
+            btnNetlifyDesktop.classList.add(...inactiveClassDesktop);
+            
+            // 重置所有按鈕樣式 (Mobile)
+            btnGitHubMobile.classList.remove(...activeClassMobile);
+            btnGitHubMobile.classList.add(...inactiveClassMobile);
+            btnNetlifyMobile.classList.remove(...activeClassMobile);
+            btnNetlifyMobile.classList.add(...inactiveClassMobile);
+
+            // 套用作用中按鈕樣式
+            if (tabId === 'github') {
+                btnGitHubDesktop.classList.remove(...inactiveClassDesktop);
+                btnGitHubDesktop.classList.add(...activeClassDesktop);
+                
+                btnGitHubMobile.classList.remove(...inactiveClassMobile);
+                btnGitHubMobile.classList.add(...activeClassMobile);
+            } else {
+                btnNetlifyDesktop.classList.remove(...inactiveClassDesktop);
+                btnNetlifyDesktop.classList.add(...activeClassDesktop);
+                // 為了區分視覺，Netlify桌面版使用不同的主題色系(Teal)也可以，但這裡統一維持主題色
+                btnNetlifyDesktop.classList.remove('bg-indigo-600');
+                btnNetlifyDesktop.classList.add('bg-teal-600'); 
+                
+                btnNetlifyMobile.classList.remove(...inactiveClassMobile);
+                btnNetlifyMobile.classList.add('bg-teal-600', 'text-white');
+            }
+        }
+
+        // 定義簡單的淡入動畫
+        document.head.insertAdjacentHTML('beforeend', `
+            <style>
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            </style>
+        `);
+    </script>
+</body>
+</html>
